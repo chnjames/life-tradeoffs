@@ -1,0 +1,59 @@
+name: Sync upstream
+
+# 每天拉取上游《高性价比人生指南》最新内容，重建数据与出处账本，
+# 有变化则开一个 PR；合并后 Vercel 自动部署。也可手动触发。
+on:
+  schedule:
+    - cron: '17 3 * * *'   # 每天 11:17 (UTC+8)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: sync-upstream
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Fetch upstream
+        run: npm run sync:upstream
+
+      - name: Rebuild dataset and provenance
+        run: npm run build:data
+
+      - name: Detect upstream head
+        id: head
+        run: |
+          HASH=$(git -C scripts/.upstream rev-parse --short=7 HEAD)
+          DATE=$(git -C scripts/.upstream log -1 --format=%cs)
+          echo "hash=$HASH" >> "$GITHUB_OUTPUT"
+          echo "date=$DATE" >> "$GITHUB_OUTPUT"
+
+      - name: Create pull request when data changed
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "chore(data): 同步上游 @ ${{ steps.head.outputs.hash }} (${{ steps.head.outputs.date }})"
+          branch: auto/upstream-sync
+          delete-branch: true
+          title: "同步上游资料 @ ${{ steps.head.outputs.hash }} · ${{ steps.head.outputs.date }}"
+          body: |
+            自动检测到上游 [eternity4719/HowToLiveBetter](https://github.com/eternity4719/HowToLiveBetter/commit/${{ steps.head.outputs.hash }}) 有更新。
+
+            - 已重建 `src/data/dataset.json`（条目正文/成本标签/证据等级）
+            - 已重建 `src/data/provenance.json`（条目级 git 出处）
+
+            合并后 Vercel 将自动部署。请抽查条目数与页面无异常再合并。
+          labels: automated,data-sync

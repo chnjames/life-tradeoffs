@@ -1,0 +1,11 @@
+node_modules/
+dist/
+*.local
+.DS_Store
+npm-debug.log*
+
+# 上游完整 clone（由 npm run sync:upstream 拉取，不入库）
+scripts/.upstream/
+
+# Vercel 本地链接信息
+.vercel/

@@ -1,0 +1,31 @@
+{
+  "name": "lifefit",
+  "version": "0.1.0",
+  "private": true,
+  "description": "取舍 · 人生适配清单 — 基于《高性价比人生指南》的非官方个人适配工具",
+  "type": "module",
+  "scripts": {
+    "sync:upstream": "node scripts/sync-upstream.mjs",
+    "data": "node scripts/build-data.mjs",
+    "provenance": "node scripts/build-provenance.mjs",
+    "build:data": "npm run data && npm run provenance",
+    "typecheck": "vue-tsc --noEmit",
+    "dev": "vite",
+    "build": "npm run build:data && vue-tsc --noEmit && vite build",
+    "build:fast": "npm run build:data && vite build",
+    "build:site": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "vue": "^3.5.13"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.1",
+    "typescript": "~5.6.3",
+    "vite": "^5.4.11",
+    "vue-tsc": "^2.1.10"
+  },
+  "allowScripts": {
+    "esbuild@0.21.5": true
+  }
+}
