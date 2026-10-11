@@ -2,6 +2,8 @@
 
 > 人生不用全做对，只需**取舍**对几件事。
 
+🔗 线上地址：**https://life-tradeoffs.vercel.app**
+
 基于《[高性价比人生指南](https://github.com/eternity4719/HowToLiveBetter)》的**非官方衍生**网站。原书把 677 条经核验的建议写给所有人；本站回答另一个问题：**此刻的我，最该看哪几条？**
 
 纯前端、无后端、无账号，所有收藏/打卡只存在你自己的浏览器里。
@@ -48,6 +50,10 @@ npm run preview         # 预览构建产物
 `src/data/*.json` 会提交进仓库，因此部署端无需访问上游网络即可构建。
 
 ## 部署（Vercel）
+
+线上：**https://life-tradeoffs.vercel.app**
+
+已连接 GitHub 仓库，**push 到 `main` 即自动部署**；同步上游的 PR 合并后也会自动发布。
 
 静态站点，框架 Vite：
 
